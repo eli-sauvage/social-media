@@ -4,3 +4,4 @@ portFwd
 *.js
 *.js.map
 !views/public/js/*.js
+.env

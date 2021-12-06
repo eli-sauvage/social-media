@@ -9,7 +9,7 @@ import * as model from '../models/instagram'
 export const router = express.Router();
 
 router.get('/', async (req: express.Request, res: express.Response) => {
-    res.render('index', { title: 'Instagram', networkName: 'instagram' })//JSON.stringify(stats)});
+    res.render('index', { title: 'Instagram', networkName:  'instagram', host:process.env.HOST })//JSON.stringify(stats)});
 });
 
 router.get('/data', async (req: express.Request, res: express.Response) => {

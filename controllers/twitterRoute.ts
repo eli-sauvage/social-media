@@ -7,7 +7,7 @@ import * as model from '../models/twitter'
 export const router = express.Router();
 
 router.get('/', async (req: express.Request, res: express.Response) => {
-    res.render('index', { title: 'Twitter', networkName : 'twitter'})
+    res.render('index', { title: 'Twitter', networkName:  'twitter', host:process.env.HOST })
 });
 
 router.get('/data', async (req: express.Request, res: express.Response) => {
