@@ -5,7 +5,7 @@ import * as mysql from 'mysql';
 export let connection:mysql.Connection
 export async function initConnection() {
     connection = mysql.createConnection({
-        host: process.env.HOST,
+        host: process.env.MYSQLHOST,
         user: 'jcAnalyzerBot',
         port:process.env.MYSQLPORT,
         password: process.env.MYSQLPASSWORD,
