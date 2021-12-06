@@ -1,0 +1,38 @@
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+
+.loader {
+  position: relative;
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 10px;
+  height: 10px;
+  animation: spin 1s linear infinite;
+  float: left;
+  margin:0 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+table{
+  margin:0 auto;
+  border:1px solid black;
+  font-size: large;
+  border-collapse: collapse;
+}
+th, td{
+  border:1px solid black;
+  padding:5px 15px
+}

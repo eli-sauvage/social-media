@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1#title= title
+  div#status
+  //- div.loader
+  //- p#status= textContent
+  script.
+    let networkName = '#{networkName}'
+  script(src='/js/'+networkName+'.js')
+  script(src="/js/loadData.js")
