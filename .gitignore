@@ -1,3 +1,6 @@
-node_modules
+node_modules/
 .vscode
 portFwd
+*.js
+*.js.map
+!views/public/js/*.js
