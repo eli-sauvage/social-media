@@ -90,7 +90,7 @@ export function get(type: string, query: string) {
 }
 
 export async function getToken(id: number) {
-    return await getSingleVal(`SELECT tokenValue FROM tokens where tokenId=${id}`).catch((e) => { debugger })
+    return await getSingleVal(`SELECT tokenValue FROM tokens where tokenId=${id}`).catch(console.error)
 }
 
 export function pushTwitterStat(numberofFollowers: number, tweetsWithImpressions: { id: number, impressions: number }[]) {

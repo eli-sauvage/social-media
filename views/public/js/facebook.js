@@ -29,11 +29,13 @@ function displayData(data) {
             if (e.date >= monday.getTime() && e.date <= monday.getTime() + 7 * 24 * 60 * 60 * 1000) posts.push(e)
         })
         postNb = posts.length
+        let afficherData = true
         if (postNb) {
             impressions = 0
             posts.forEach(post => impressions += post.impressions)
             engagement = 0
-            posts.forEach(post => engagement += post.likes + post.comments)
+            posts.forEach(post => engagement += post.likes || 0 + post.comments || 0)   
+            if(engagement > impressions) afficherData = false
             taux = !posts.find(e=>e.impressions) ? oldT : !!engagement && !!impressions ? engagement / impressions * 100 : 0
         }
 
@@ -41,14 +43,14 @@ function displayData(data) {
         line.append($("<td></td>").text(`${postNb}  ${evolP ? (evolP > 0 ? "(+" : "(") + evolP + ")" : ""}`).css("background-color", evolP > 0 ? green : evolP < 0 ? red : ""))
         //impressions
         let evolI = oldI == -1 ? 0 : impressions - oldI
-        line.append($("<td></td>").text(`${(postNb ? isNaN(impressions)?"":Math.floor(impressions / postNb) : "/")}  ${evolI ? (evolI > 0 ? "(+" : "(") + evolI + ")" : ""}`).css("background-color", evolI > 0 ? green : evolI < 0 ? red : ""))
+        line.append($("<td></td>").text(`${(afficherData && postNb ? isNaN(impressions)?"":Math.floor(impressions / postNb) : "/")}  ${evolI  && afficherData ? (evolI > 0 ? "(+" : "(") + evolI + ")" : ""}`).css("background-color", evolI > 0 ? green : evolI < 0 ? red : ""))
         //engagement
         let evolE = oldE == -1 ? 0 : engagement - oldE
-        line.append($("<td></td>").text(`${postNb ? Math.floor(engagement / postNb) : "/"}  ${evolE ? (evolE > 0 ? "(+" : "(") + evolE + ")" : ""}`).css("background-color", evolE > 0 ?
+        line.append($("<td></td>").text(`${afficherData && postNb? Math.floor(engagement / postNb) : "/"}  ${evolE  && afficherData ? (evolE > 0 ? "(+" : "(") + evolE + ")" : ""}`).css("background-color", evolE > 0 ?
             green : evolE < 0 ? red : ""))
         //taux
         let evolT = oldT == -1 ? 0 : (taux - oldT).toFixed(2)
-        line.append($("<td></td>").text(`${postNb ? isNaN(impressions)?"":taux.toFixed(2) : "/"}  ${evolT != "0.00" ? (evolT > 0 ? "(+" : "(") + evolT + ")" : ""}`).css("background-color", evolT > 0 ? green : evolT < 0 ? red : ""))
+        line.append($("<td></td>").text(`${afficherData && postNb? isNaN(impressions)?"":taux.toFixed(2) : "/"}  ${evolT != "0.00" && afficherData ? (evolT > 0 ? "(+" : "(") + evolT + ")" : ""}`).css("background-color", evolT > 0 ? green : evolT < 0 ? red : ""))
         $("#table").prepend(line)
     })
     $("#table").prepend($("<tr></tr>").attr("id", "header"))

@@ -1,28 +1,41 @@
-import { getToken } from './sqlConnection'
+import { getToken, getMultiple } from './sqlConnection'
 import axios from 'axios'
 
 type post = {
     id: string,
     date: number,
-    likes: number,
-    comments: number
 }
+type insights = {
+    week: number,
+    impressions: number,
+    engagementRate: number
+}[]
 type linkedInData = {
-    followerCount: number
-    posts: post[]
+    followers: number,
+    followersHistory: { date: number, followers: number }[]
+    posts: post[],
+    insights: insights
 }
 
 
 export async function getStats(): Promise<linkedInData> {
     let token = await getToken(1).catch((e) => { debugger }) as string
-    let [shares, ugc, followers] = await Promise.all([getShares(token), getUgc(token), getFollowers(token)]).catch(e => { throw e })
+    let [shares, ugc, followers, followersHistory, insights] = await Promise.all([getShares(token), getUgc(token), getFollowers(token), getFollowersHistory(), getInsights(token)]).catch(e => { throw e })
     ugc = ugc.filter(e => !shares.map(e => e.date).includes(e.date)) //retirer doublons
     let posts: post[] = shares.concat(ugc)
-    let likesComment = await getLikesComments(token, posts)
+    // await setLikesComments(token, posts)
     return {
-        followerCount: followers,
-        posts: posts
+        followers: followers,
+        posts: posts,
+        followersHistory: followersHistory,
+        insights: insights
     }
+}
+
+async function getFollowersHistory(): Promise<{ date: number, followers: number }[]> {
+    let res = await getMultiple("SELECT date, numberOfFollowers FROM linkedinStats").catch(e => { throw "error reading sql linkedin followers : " + e })
+    res = res.map(({ date, numberOfFollowers }) => ({ date: new Date(date).getTime(), followers: numberOfFollowers }))
+    return res as { date: number, followers: number }[]
 }
 
 async function getShares(token: string): Promise<post[]> { //shares <=> posts
@@ -32,7 +45,7 @@ async function getShares(token: string): Promise<post[]> { //shares <=> posts
             headers: {
                 "Authorization": `Bearer ${token}`
             }
-        }).catch((e) => { throw "error getting linkedin shares : "+e }) as any
+        }).catch((e) => { throw "error getting linkedin shares : " + e }) as any
         let data = response.data
         posts = posts.concat(data.elements)
         let nextlink = data.paging.links.filter(e => e.rel == "next")[0]
@@ -53,7 +66,7 @@ async function getUgc(token: string): Promise<post[]> {
                 "Authorization": `Bearer ${token}`,
                 "X-Restli-Protocol-Version": "2.0.0"
             }
-        }).catch(e => { throw "error getting linkedin ugc : "+e }) as any
+        }).catch(e => { throw "error getting linkedin ugc : " + e }) as any
         let data = response.data
         posts = posts.concat(data.elements)
         let nextlink = data.paging.links.filter(e => e.rel == "next")[0]
@@ -67,21 +80,25 @@ async function getUgc(token: string): Promise<post[]> {
 
 }
 
-async function getLikesComments(token: string, posts: post[]): Promise<post[]> {
-    let url = "https://api.linkedin.com/v2/socialActions?"
-    posts.forEach(post => url += "ids=" + post.id + "&")
-    let response = await axios.get(url, { headers: { "Authorization": `Bearer ${token}` } }).catch(e => { throw "error getting linkedin likesComments"+e }) as any
-    let likesComments
+async function getInsights(token: string): Promise<insights> {
+    let fourteenMonthsAgo = new Date(Date.now() - 14 * 30 * 24 * 60 * 60 * 1000).getTime()
+    let beginDate = new Date(fourteenMonthsAgo + (7 - new Date(fourteenMonthsAgo).getDay()) * 24 * 60 * 60 * 1000).getTime()//for it to be a sunday (7th day)
+    let endDate = Date.now()
+    let url = `https://api.linkedin.com/v2/organizationalEntityShareStatistics?q=organizationalEntity&organizationalEntity=urn:li:organization:2414183&timeIntervals.timeGranularityType=WEEK&timeIntervals.timeRange.start=${beginDate}&timeIntervals.timeRange.end=${endDate}&count=100`
+    let response = await axios.get(url, { headers: { "Authorization": `Bearer ${token}` } }).catch(e => { throw "error getting linkedin likesComments" + e }) as any
     try {
-        likesComments = response.data.results
-        for (let i = 0; i < posts.length; i++) {
-            posts[i].likes = likesComments[posts[i].id].likesSummary.totalLikes
-            posts[i].comments = likesComments[posts[i].id].commentsSummary.aggregatedTotalComments
-        }
+        let data = response.data.elements
+        let insights = data.map(e => {
+            return {
+                week: e.timeRange.start + 24 * 60 * 60 * 1000,
+                impressions: e.totalShareStatistics.impressionCount,
+                engagementRate: e.totalShareStatistics.engagement
+            }
+        }) as insights
+        return insights
     } catch (e) {
         throw "got error reading linkedIn likesComments" + e
     }
-    return posts
 }
 
 export async function getFollowers(apiToken: string): Promise<number> {
@@ -90,7 +107,7 @@ export async function getFollowers(apiToken: string): Promise<number> {
         headers: {
             "Authorization": `Bearer ${apiToken}`
         }
-    }).catch(e => { throw "error getting linkedin followers : "+e }) as any
+    }).catch(e => { throw "error getting linkedin followers : " + e }) as any
     let followerCount: number
     try {
         followerCount = follows.data.elements[0].followerCountsByAssociationType[0].followerCounts.organicFollowerCount//non-employees

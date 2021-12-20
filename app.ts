@@ -76,9 +76,7 @@ initMySql().then(() => {
     });
 }).catch(console.error)
 
-
-process.on("uncaughtException", (e) => { debugger })
-process.on("unhandledRejection", (e) => { debugger })
-
+process.on("uncaughtException", console.error)
+process.on("unhandledRejection", console.error)
 
 //TODO : impressions; display as table; auth; (graph); try to follow indicateurs table

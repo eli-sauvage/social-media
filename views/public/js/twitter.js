@@ -36,7 +36,6 @@ function displayData(data) {
             posts.forEach(post => engagement += post.likes + post.comments)
             taux = !posts.find(e=>e.impressions) ? oldT : !!engagement && !!impressions ? engagement / impressions * 100 : 0
         }
-
         let evolP = oldP == -1 ? 0 : postNb - oldP
         line.append($("<td></td>").text(`${postNb}  ${evolP ? (evolP > 0 ? "(+" : "(") + evolP + ")" : ""}`).css("background-color", evolP > 0 ? green : evolP < 0 ? red : ""))
         //impressions

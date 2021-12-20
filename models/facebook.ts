@@ -11,9 +11,9 @@ type posts = {
 }[]
 
 type fbData = {
-    currentFanCount: number,
+    followers: number,
     posts: posts,
-    fanCount:{date:number, fanCount:number}[],
+    followersHistory:{date:number, followers:number}[],
 }
 
 
@@ -28,16 +28,16 @@ export async function getStats(): Promise<fbData> {
         getFollowersHistory()
     ]).catch((e) => { throw e })
     return {
-        currentFanCount: res[0],
+        followers: res[0],
         posts: res[1],
-        fanCount:res[2]
+        followersHistory:res[2]
     }
 }
 
-async function getFollowersHistory():Promise<{date:number, fanCount:number}[]>{
+async function getFollowersHistory():Promise<{date:number, followers:number}[]>{
     let res = await getMultiple("SELECT date, numberOfFollowers FROM facebookStats").catch(e=>{throw "error reading sql facebook followers : "+e})
-    res = res.map(({date, numberOfFollowers})=>({date:new Date(date).getTime(), numberOfFollowers}))
-    return res
+    res = res.map(({date, numberOfFollowers})=>({date:new Date(date).getTime(), followers:numberOfFollowers}))
+    return res as {date:number, followers:number}[]
 }
 
 export async function getFanCount(token: string): Promise<number> {
