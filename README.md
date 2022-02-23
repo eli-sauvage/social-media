@@ -9,7 +9,7 @@ puis changer le token dans la base sql
 # Pour lancer en local
 lancer `portFwd.bat`
 
-pour le `.env` :
+`.env` :
 ```
 MYSQLPASSWORD=******
 MYSQLHOST=127.0.0.1
