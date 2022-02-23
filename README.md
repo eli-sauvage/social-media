@@ -6,8 +6,8 @@ cocher `r_organization_social rw_organization_admin w_member_social w_organizati
 
 puis remplacer avec le nouveau token dans la base sql
 
-# Pour lancer en local
-lancer `portFwd.bat`
+# Pour lancer en local en utilisant la DB distante
+lancer `portFwd.bat` (la DB n'accepte que les connexions locales)
 
 `.env` :
 ```
