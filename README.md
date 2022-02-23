@@ -4,7 +4,7 @@ https://www.linkedin.com/developers/tools/oauth/token-generator?clientId=78yo6lu
 
 cocher `r_organization_social rw_organization_admin w_member_social w_organization_social`
 
-puis changer le token dans la base sql
+puis remplacer avec le nouveau token dans la base sql
 
 # Pour lancer en local
 lancer `portFwd.bat`
