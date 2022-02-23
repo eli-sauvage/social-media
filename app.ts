@@ -13,10 +13,14 @@ import { router as routesFb} from './controllers/facebookRoute'
 import { router as routesTw } from './controllers/twitterRoute'
 import { router as routesInsta } from './controllers/instaRoute'
 import { router as routesLinkedIn } from './controllers/linkedInRoute'
+import {router as routesConnect} from './controllers/connectRoute'
+import {sessionHandler } from "./controllers/sessionHandler"
 
 import { saveData } from './models/dailySaveToSql'
 
 import {scheduleJob} from 'node-schedule'
+
+import * as cookieParser from "cookie-parser"
 
 
 const app = express();
@@ -28,7 +32,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, "views", 'public')));
+app.use(cookieParser())
 
+app.use('/connect', routesConnect);
+app.use("/*", sessionHandler)
 app.use('/', routes);
 app.use('/facebook', routesFb);
 app.use('/instagram', routesInsta);
