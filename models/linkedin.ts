@@ -1,12 +1,13 @@
 import { getToken, getMultiple } from './sqlConnection'
 import axios from 'axios'
 
+import { writeFile, readFile } from "fs/promises"
 type post = {
     id: string,
     date: number,
 }
 type insights = {
-    week: number,
+    date: number,
     impressions: number,
     engagementRate: number
 }[]
@@ -18,18 +19,31 @@ type linkedInData = {
 }
 
 
+export async function getCache(): Promise<linkedInData> {
+    try {
+        let data = await readFile("cache/linkedin.json") as unknown as { date: number, data: linkedInData }
+        let content = JSON.parse(data.toString()) as { date: number, data: linkedInData }
+        if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
+        else return await getStats()
+    }
+    catch (e) {
+        return await getStats()
+    }
+}
 export async function getStats(): Promise<linkedInData> {
     let token = await getToken(1).catch((e) => { debugger }) as string
     let [shares, ugc, followers, followersHistory, insights] = await Promise.all([getShares(token), getUgc(token), getFollowers(token), getFollowersHistory(), getInsights(token)]).catch(e => { throw e })
     ugc = ugc.filter(e => !shares.map(e => e.date).includes(e.date)) //retirer doublons
     let posts: post[] = shares.concat(ugc)
     // await setLikesComments(token, posts)
-    return {
+    let ret = {
         followers: followers,
-        posts: posts,
+        posts: posts.sort((a, b)=> a.date-b.date),
         followersHistory: followersHistory,
         insights: insights
     }
+    writeFile("cache/linkedin.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    return ret
 }
 
 async function getFollowersHistory(): Promise<{ date: number, followers: number }[]> {
@@ -90,7 +104,7 @@ async function getInsights(token: string): Promise<insights> {
         let data = response.data.elements
         let insights = data.map(e => {
             return {
-                week: e.timeRange.start + 24 * 60 * 60 * 1000,
+                date : e.timeRange.start + 24 * 60 * 60 * 1000,
                 impressions: e.totalShareStatistics.impressionCount,
                 engagementRate: e.totalShareStatistics.engagement
             }

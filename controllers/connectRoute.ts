@@ -10,6 +10,7 @@ export const router = express.Router();
 router.get('/', async (req: express.Request, res: express.Response) => {
     res.render('connection')
 });
+
 router.get('/activate/:code', async (req: express.Request, res: express.Response) => {
     if (req.params.code == process.env.USERPASSWORD) {
         let session = await createSession()

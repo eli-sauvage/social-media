@@ -1,7 +1,6 @@
 import * as express from 'express';
 import { AddressInfo } from "net";
 import * as path from 'path';
-import * as ws from 'ws';
 import { Server } from 'http';
 
 require('dotenv').config()
@@ -17,6 +16,7 @@ import {router as routesConnect} from './controllers/connectRoute'
 import {sessionHandler } from "./controllers/sessionHandler"
 
 import { saveData } from './models/dailySaveToSql'
+import { refreshCache } from './models/hourlyCacheRefresh';
 
 import {scheduleJob} from 'node-schedule'
 
@@ -46,7 +46,8 @@ app.use('/linkedin', routesLinkedIn);
 app.use((req, res, next) => {
     const err = new Error('Not Found');
     err['status'] = 404;
-    next(err);
+    res.send("Cette page n'existe pas !")
+    // next(err);
 });
 
 // error handlers
@@ -78,12 +79,11 @@ app.set('port', process.env.PORT || 3000);
 let server: Server
 initMySql().then(() => {
     server = app.listen(app.get('port'), function () {
-        console.log(`Express server listening on port ${(server.address() as AddressInfo).port} and mysql initilized`);
-        scheduleJob("dailySaveSql", {hour:2, minute:0}, ()=>{saveData().catch(e=>{debugger})})
+        console.log(`Express server listening on port ${(server.address() as AddressInfo).port} and mysql initilized`)
+        scheduleJob("dailySaveSql", {hour:2, minute:0}, ()=>{saveData().catch(e=>{console.error})})
+        scheduleJob("hourlyCacheRefresh", {minute:46}, ()=>{refreshCache().catch(e=>{console.error})})
     });
 }).catch(console.error)
 
 process.on("uncaughtException", console.error)
 process.on("unhandledRejection", console.error)
-
-//TODO : impressions; display as table; auth; (graph); try to follow indicateurs table

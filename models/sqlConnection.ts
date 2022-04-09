@@ -12,7 +12,6 @@ export async function initConnection() {
 
     })
     pool.getConnection((err, connection) => {
-        console.log(err, connection)
         if (err) {
             if (err.code === 'PROTOCOL_CONNECTION_LOST') {
                 console.error('Database connection was closed.')

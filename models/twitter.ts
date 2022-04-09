@@ -1,5 +1,6 @@
 import axios from "axios"
 import { getToken, getMultiple } from './sqlConnection'
+import { writeFile, readFile } from "fs/promises"
 
 type tweet = {
     likes: number,
@@ -18,6 +19,17 @@ type twitterStats = {
     }[]
     posts: tweet[]
 }
+export async function getCache(): Promise<twitterStats> {
+    try {
+        let data = await readFile("cache/twitter.json") as unknown as { date: number, data: twitterStats }
+        let content = JSON.parse(data.toString()) as { date: number, data: twitterStats }
+        if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
+        else return await getStats()
+    }
+    catch (e) {
+        return await getStats()
+    }
+}
 
 export async function getStats(): Promise<twitterStats> {
     let token = await getToken(4) as string
@@ -29,11 +41,13 @@ export async function getStats(): Promise<twitterStats> {
         if(imp)tweet.impressions = imp.impressions
         delete tweet.id
     })
-    return {
+    let ret = {
         followers: followers,
         posts: posts,
         followersHistory
     }
+    writeFile("cache/twitter.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    return ret
 }
 
 export async function getFollowersHistory(): Promise<{ followers: number, date: number }[]> {
@@ -82,7 +96,7 @@ async function getTweets(token: string): Promise<tweet[]> {
             throw "got error reading tweets : " + e
         }
     }
-    return tweets
+    return tweets.sort((a, b)=> a.date-b.date)
 }
 
 export async function getImpressions(): Promise<{ id: number, impressions: number }[]> {

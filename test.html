@@ -1,0 +1,356 @@
+<html>
+  <head>
+<style>
+ * {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/203277/body_bg.jpg") no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.widget {
+  width: 90%;
+  max-width: 600px;
+  margin: 3em auto;
+  box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.25);
+}
+.widget::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.widget header {
+  background: #144c88;
+  padding: 1em 1.5em;
+  border-top: 4px solid #7dd343;
+  color: #fff;
+}
+.widget header h3 {
+  margin: 0;
+  font-size: 1.35em;
+  font-weight: 400;
+}
+.widget .chart {
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+@media only screen and (min-width: 600px) {
+  .widget .chart {
+    float: right;
+    width: 65%;
+    height: 275px;
+  }
+}
+.widget .chart .controls {
+  height: 50px;
+  border-bottom: 1px solid #ccc;
+}
+.widget .chart .controls::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.widget .chart .controls nav {
+  float: left;
+  width: 75%;
+  line-height: 50px;
+  border-right: 1px solid #ccc;
+}
+.widget .chart .controls nav a {
+  display: block;
+  padding: 0 1.5em;
+  text-decoration: none;
+  color: #3c3c3c;
+}
+@media only screen and (min-width: 600px) {
+  .widget .chart .controls nav a {
+    padding: 0 1em;
+  }
+}
+.widget .chart .controls nav span {
+  display: inline-block;
+  float: right;
+  line-height: 50px;
+  color: #3797d3;
+}
+.widget .chart .controls div {
+  float: left;
+  width: 25%;
+  line-height: 50px;
+  text-align: center;
+}
+.widget .chart .controls div span:first-child {
+  color: #7dd343;
+}
+.widget .chart .controls div span:nth-child(2) {
+  font-weight: 600;
+  font-size: 1.35em;
+  color: #3c3c3c;
+}
+.widget .chart .canvas-container {
+  width: 100%;
+  text-align: center;
+}
+.widget .chart .canvas-container canvas {
+  display: inline;
+  width: 370px;
+  height: 210px;
+  padding: 1em;
+}
+.widget .info {
+  position: relative;
+  width: 100%;
+  height: 275px;
+  background: #20649b;
+}
+@media only screen and (min-width: 600px) {
+  .widget .info {
+    float: left;
+    width: 35%;
+  }
+}
+.widget .info h4 {
+  margin: 0 0 0.35em;
+  padding: 1em 1.5em;
+  font-size: 1em;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fff;
+}
+.widget .info .info-module {
+  padding: 0 1.5em;
+  font-weight: 400;
+}
+.widget .info .info-module .heading {
+  font-size: 0.85em;
+}
+.widget .info .info-module .heading::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.widget .info .info-module .heading span {
+  display: inline-block;
+  color: #fff;
+}
+.widget .info .info-module .heading span:first-child {
+  float: left;
+}
+.widget .info .info-module .heading span:nth-child(2) {
+  float: right;
+}
+.widget .info .info-module .progress {
+  height: 5px;
+  margin: 0.35em 0 1em;
+  background: #0f3d77;
+  border-radius: 10px;
+}
+.widget .info .info-module .progress:after {
+  content: "";
+  display: block;
+  height: 100%;
+  background: #45b0e6;
+  border-radius: 5px;
+}
+.widget .info .info-module .undergraduate:after {
+  width: 65%;
+  -webkit-animation: undergraduate 2s ease-in-out forwards;
+  animation: undergraduate 2s ease-in-out forwards;
+}
+.widget .info .info-module .graduate:after {
+  width: 30%;
+  -webkit-animation: graduate 2s ease-in-out forwards;
+  animation: graduate 2s ease-in-out forwards;
+}
+.widget .info .info-module .transfer:after {
+  width: 5%;
+  -webkit-animation: transfer 2s ease-in-out forwards;
+  animation: transfer 2s ease-in-out forwards;
+}
+@-webkit-keyframes undergraduate {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 65%;
+  }
+}
+@keyframes undergraduate {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 65%;
+  }
+}
+@-webkit-keyframes graduate {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 30%;
+  }
+}
+@keyframes graduate {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 30%;
+  }
+}
+@-webkit-keyframes transfer {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 5%;
+  }
+}
+@keyframes transfer {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 5%;
+  }
+}
+.widget .info nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+.widget .info nav a {
+  display: block;
+  line-height: 50px;
+  text-decoration: none;
+  text-align: center;
+  color: #fff;
+}
+.widget .info nav span:first-child {
+  float: left;
+  width: 75%;
+  background: #49b4e8;
+}
+.widget .info nav span:nth-child(2) {
+  float: left;
+  width: 25%;
+  line-height: 50px;
+  background: #3099dd;
+}
+</style>
+  </head>
+  <body>
+    <div class='widget'>
+      <header>
+        <h3>Admissions</h3>
+      </header>
+      <div class='chart'>
+        <div class='controls'>
+          <nav>
+            <a href='javascript:void(0);'>
+              This week<span class='fa fa-angle-down fa-lg'></span></a>
+          </nav>
+          <div>
+            <span class='fa fa-caret-up fa-lg'>&nbsp;&nbsp;</span>
+            <span>27%</span>
+          </div>
+        </div>
+        <div class='canvas-container'>
+          <canvas id='c1'></canvas>
+        </div>
+      </div>
+      <div class='info'>
+        <h4>Student info:</h4>
+        <div class='info-module'>
+          <div class='heading'>
+            <span>Undergraduate</span>
+            <span>65%</span>
+          </div>
+          <div class='progress undergraduate'></div>
+        </div>
+        <div class='info-module'>
+          <div class='heading'>
+            <span>Graduate</span>
+            <span>30%</span>
+          </div>
+          <div class='progress graduate'></div>
+        </div>
+        <div class='info-module'>
+          <div class='heading'>
+            <span>Transfer</span>
+            <span>5%</span>
+          </div>
+          <div class='progress transfer'></div>
+        </div>
+        <nav>
+          <a href='javascript:void(0);'><span>View other stats</span><span class='fa fa-refresh fa-lg'></span></a>
+        </nav>
+      </div>
+    </div>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      var data = {
+          labels: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+          datasets: [
+            {
+              fillColor: "rgba(255,255,255,0.1)",
+              strokeColor: "rgba(0,0,0,0.25)",
+              pointColor: "rgba(255,255,255,1)",
+              pointStrokeColor: "#fe9d37",
+              data: [135, 185, 225, 385, 275, 215, 265]
+            }
+          ]
+        }
+
+        var options = {
+          scaleFontColor: "rgba(0,0,0,1)",
+          scaleLineColor: "rgba(0,0,0,0.1)",
+          scaleGridLineColor: "rgba(0,0,0,0.1)",
+          scaleShowLabels: false,
+          scaleShowHorizontalLines: false,
+          bezierCurve: false,
+          pointDot: true,
+          pointDotRadius: 5,
+          pointDotStrokeWidth: 2,
+          scaleOverride: true,
+          scaleSteps: 6,
+          scaleStepWidth: 100,
+          responsive: true,
+          showTooltips: true,
+          tooltipTemplate: "<%= value %> " + "Students",
+          tooltipFontSize: 16,
+          tooltipYPadding: 12,
+          tooltipXPadding: 12,
+          tooltipCornerRadius: 3,
+          tooltipFillColor: "#3797d3",
+
+          onAnimationComplete: function () {
+            var arrSelector = [];
+            this.datasets[0].points.forEach(function (point) {
+              if (point.label == 'WED') {
+                arrSelector.push(point);
+              }
+            });
+
+            this.showTooltip(arrSelector, true);
+          },
+          tooltipEvents: []
+        }
+
+        new Chart(c1.getContext("2d")).Line(data, options);
+    </script>
+ 
+  </body>
+</html>
