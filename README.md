@@ -1,3 +1,10 @@
+# Pour lancer sur le server
+```
+docker build -t social-media-analyzer .
+(docker stop s-m-a)
+docker run -p 1337:1337 -d social-media-analyzer
+```
+
 # Maintenance
 ## pour linkedIn (tous les 2 mois)
 https://www.linkedin.com/developers/tools/oauth/token-generator?clientId=78yo6lujfbczrc
