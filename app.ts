@@ -21,7 +21,11 @@ import { refreshCache } from './models/hourlyCacheRefresh';
 import {scheduleJob} from 'node-schedule'
 
 import * as cookieParser from "cookie-parser"
-
+import {writeFileSync} from "fs"
+writeFileSync("cache/twitter.json", "")
+writeFileSync("cache/instagram.json", "")
+writeFileSync("cache/linkedin.json", "")
+writeFileSync("cache/facebook.json", "")
 
 const app = express();
 
