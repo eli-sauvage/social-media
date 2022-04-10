@@ -21,7 +21,7 @@ type twitterStats = {
 }
 export async function getCache(): Promise<twitterStats> {
     try {
-        let data = await readFile("cache/twitter.json") as unknown as { date: number, data: twitterStats }
+        let data = await readFile(__dirname + "/../cache/twitter.json") as unknown as { date: number, data: twitterStats }
         let content = JSON.parse(data.toString()) as { date: number, data: twitterStats }
         if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
         else return await getStats()
@@ -46,7 +46,7 @@ export async function getStats(): Promise<twitterStats> {
         posts: posts,
         followersHistory
     }
-    writeFile("cache/twitter.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    writeFile(__dirname + "/../cache/twitter.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
     return ret
 }
 

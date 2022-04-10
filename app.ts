@@ -22,10 +22,10 @@ import {scheduleJob} from 'node-schedule'
 
 import * as cookieParser from "cookie-parser"
 import {writeFileSync} from "fs"
-writeFileSync("cache/twitter.json", "")
-writeFileSync("cache/instagram.json", "")
-writeFileSync("cache/linkedin.json", "")
-writeFileSync("cache/facebook.json", "")
+writeFileSync(__dirname + "/cache/twitter.json", "")
+writeFileSync(__dirname + "/cache/instagram.json", "")
+writeFileSync(__dirname + "/cache/linkedin.json", "")
+writeFileSync(__dirname + "/cache/facebook.json", "")
 
 const app = express();
 
