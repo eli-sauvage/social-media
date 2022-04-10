@@ -203,12 +203,14 @@ function updateChart() {
     debut = debut.isValid() ? debut : moment(0)
     let fin = moment($("#dateFin")[0].value, "DD/MM/YYYY")
     fin = fin.isValid() ? fin : moment()
+    // myChart.options.scales.y.max = undefined
     myChart.data.datasets = []
     let everyDates = [];
     if (mode == "follows") {
+        myChart.destroy()
+        myChart = new Chart(ctx, { ...chartOptions, type: "line" })
+        if (myChart.options.scales.y) myChart.options.scales.y.max = undefined
         networkList.forEach(e => {
-            myChart.destroy()
-            myChart = new Chart(ctx, { ...chartOptions, type: "line" })
             // console.log(e)
             if (!isVisible[e]) return
             let { dates, values } = computeData(data[e].followersHistory.dates, data[e].followersHistory.values, debut, fin)
@@ -217,9 +219,10 @@ function updateChart() {
         })
         myChart.data.labels = everyDates[0].map(e => e.format("DD/MM/YYYY"))
     } else if (mode == "posts") {
+        myChart.destroy()
+        myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
+        if (myChart.options.scales.y) myChart.options.scales.y.max = undefined
         networkList.forEach(e => {
-            myChart.destroy()
-            myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
             // console.log(e)
             if (!isVisible[e]) return
             let { dates, values } = computeData(data[e].posts.dates, data[e].posts.values, debut, fin)
@@ -232,6 +235,8 @@ function updateChart() {
         myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
         if (mode == "engagementRate")
             myChart.options.scales.y.max = 1
+        else if (myChart.options.scales.y)
+            myChart.options.scales.y.max = undefined
         networkList.forEach(e => {
             // console.log(e)
             if (!isVisible[e]) return
@@ -255,9 +260,9 @@ function updateChart() {
         })
         myChart.data.labels = everyDates[0].map(e => e.format("DD/MM/YYYY"))
     }else if (mode == "stories"){
+        myChart.destroy()
+        myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
         networkList.forEach(e => {
-            myChart.destroy()
-            myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
             // console.log(e)
             if (!isVisible[e]) return
             let { dates, values } = computeData(data[e].storiesHistory.dates, data[e].storiesHistory.values, debut, fin)
