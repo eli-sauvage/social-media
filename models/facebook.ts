@@ -18,7 +18,7 @@ type fbData = {
 
 export async function getCache(): Promise<fbData> {
     try {
-        let data = await readFile(__dirname + "/../cache/facebook.json") as unknown as { date: number, data: fbData }
+        let data = await readFile("cache/facebook.json") as unknown as { date: number, data: fbData }
         let content = JSON.parse(data.toString()) as { date: number, data: fbData }
         if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
         else return await getStats()
@@ -42,7 +42,7 @@ export async function getStats(): Promise<fbData> {
         posts: res[1],
         followersHistory: res[2]
     }
-    writeFile(__dirname + "/../cache/facebook.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    writeFile("cache/facebook.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
     return ret
 }
 

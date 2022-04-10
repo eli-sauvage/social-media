@@ -18,7 +18,7 @@ type instaStats = {
 
 export async function getCache(): Promise<instaStats> {
     try {
-        let data = await readFile(__dirname + "/../cache/instagram.json") as unknown as { date: number, data: instaStats }
+        let data = await readFile("cache/instagram.json") as unknown as { date: number, data: instaStats }
         let content = JSON.parse(data.toString()) as { date: number, data: instaStats }
         if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
         else return await getStats()
@@ -42,7 +42,7 @@ export async function getStats():Promise<instaStats>{
         followersHistory:history.follows,
         storiesHistory:history.stories
     }
-    writeFile(__dirname + "/../cache/instagram.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    writeFile("cache/instagram.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
     return ret
 }
 

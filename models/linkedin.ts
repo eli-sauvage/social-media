@@ -21,7 +21,7 @@ type linkedInData = {
 
 export async function getCache(): Promise<linkedInData> {
     try {
-        let data = await readFile(__dirname + "/../cache/linkedin.json") as unknown as { date: number, data: linkedInData }
+        let data = await readFile("cache/linkedin.json") as unknown as { date: number, data: linkedInData }
         let content = JSON.parse(data.toString()) as { date: number, data: linkedInData }
         if (Date.now() - content.date < 60 * 60 * 1000) return(content.data)//cache pas trop vieux
         else return await getStats()
@@ -42,7 +42,7 @@ export async function getStats(): Promise<linkedInData> {
         followersHistory: followersHistory,
         insights: insights
     }
-    writeFile(__dirname + "/../cache/linkedin.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
+    writeFile("cache/linkedin.json", JSON.stringify({date:Date.now(), data:ret})).catch(console.error)
     return ret
 }
 
