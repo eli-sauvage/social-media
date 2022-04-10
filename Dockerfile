@@ -9,7 +9,7 @@ RUN npm i -g typescript
 
 COPY ./ ./
 
-RUN "mkdir /app/cache"
+RUN mkdir /app/cache
 
 RUN tsc
 
