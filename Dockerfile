@@ -9,6 +9,8 @@ RUN npm i -g typescript
 
 COPY ./ ./
 
+RUN "mkdir /app/cache"
+
 RUN tsc
 
 EXPOSE 3007

@@ -21,10 +21,10 @@ import { refreshCache } from './models/hourlyCacheRefresh';
 import {scheduleJob} from 'node-schedule'
 
 import * as cookieParser from "cookie-parser"
-import { existsSync, mkdirSync } from "fs"
-if (!existsSync("/cache")) {
-    mkdirSync("/cache");
-}
+// import { existsSync, mkdirSync } from "fs"
+// if (!existsSync("/cache")) {
+//     mkdirSync("/cache");
+// }
 
 const app = express();
 
