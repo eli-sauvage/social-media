@@ -32,7 +32,7 @@ export async function getCache(): Promise<linkedInData> {
 }
 export async function getStats(): Promise<linkedInData> {
     let token = await getToken(1).catch((e) => { debugger }) as string
-    let [shares, ugc, followers, followersHistory, insights] = await Promise.all([getShares(token), getUgc(token), getFollowers(token), getFollowersHistory(), getInsights(token)]).catch(e => { throw e })
+    let [shares, ugc, followers, followersHistory, insights] = await Promise.all([getShares(token), getUgc(token), getFollowers(token), getFollowersHistory(), getInsights(token)])
     ugc = ugc.filter(e => !shares.map(e => e.date).includes(e.date)) //retirer doublons
     let posts: post[] = shares.concat(ugc)
     // await setLikesComments(token, posts)

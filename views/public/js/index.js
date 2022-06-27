@@ -7,7 +7,7 @@ $("#calFin").on("click", () => { $('#dateFin').focus() })
 
 let chargement = $("<div id=\"chargement\"></div>")
 chargement.append($("<div class=loader></div>"))
-chargement.append($("<p></p>").text("Chargement des données ..."))
+chargement.append($("<p></p>").text("Chargement des données ...").attr("id", "statusText"))
 $("#status").append(chargement);
 let mychart, data, firstDateFollowers, firstDatePosts, ctx
 
@@ -17,11 +17,29 @@ let mychart, data, firstDateFollowers, firstDatePosts, ctx
         fetch(`${host}/facebook/data`),
         fetch(`${host}/twitter/data`),
         fetch(`${host}/linkedin/data`),
-    ])
-    data = await Promise.all(reqs.map(e => e.json()))
+    ]).catch(console.error)
+    console.log(reqs)
+    data = await Promise.all(reqs.map(e => e.json())).catch(console.error)
     data = { instagram: data[0], facebook: data[1], twitter: data[2], linkedin: data[3] }
     console.log(data)
+    let err = false
+    for (network in data) {
+        let d = data[network]
+        if (d.error) {
+            err = true
+            $(".loader").remove();
+            if (d.error == 2) {
+                chargement.append($("<p></p>").text("erreur de connection à " + network))
+                chargement.append($("<a></a>").attr("href", d.url).attr("target", "_blank").text("cliquez ici pour se reconnecter à " + network))
+                $("#myChart").remove()
+            } else {
+                $("#statusText").text("erreur de chargement des données de " + network)
+            }
+        }
+    }
+    if(err)return
     $("#status").remove();
+
     firstDateFollowers = moment()
     firstDatePosts = moment()
     for (let network in data) {
@@ -263,28 +281,28 @@ function updateChart() {
                 else
                     ({ dates, values } = computeData(data[e].postsDetails.dates, data[e].postsDetails.values.map(e => e ? e[mode] : null), debut, fin))
             }
-            total = values.reduce((a, b) =>  a + b, total)
-            if (mode == "engagementRate") n+= values.filter(e=>e).length
+            total = values.reduce((a, b) => a + b, total)
+            if (mode == "engagementRate") n += values.filter(e => e).length
             console.log(n)
-            console.log(values.filter(e=>e))
+            console.log(values.filter(e => e))
             everyDates.push(dates)
             myChart.data.datasets.push({ ...defaultDataset, label: e, data: values, backgroundColor: colors[e], borderColor: colors[e], minBarLength: 3 })
         })
         $("#total")[0].className = ""
-            console.log(n)
-        $("#total")[0].textContent = mode == "engagementRate" ? "Moyenne : " + ((total/n)*100).toFixed(1) + "%" :"Total : " + total
+        console.log(n)
+        $("#total")[0].textContent = mode == "engagementRate" ? "Moyenne : " + ((total / n) * 100).toFixed(1) + "%" : "Total : " + total
         myChart.data.labels = everyDates[0].map(e => e.format("DD/MM/YYYY"))
     } else if (mode == "stories") {
         myChart.destroy()
         myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
-        let total = 0 
+        let total = 0
         networkList.forEach(e => {
             // console.log(e)
             if (!isVisible[e]) return
             let { dates, values } = computeData(data[e].storiesHistory.dates, data[e].storiesHistory.values, debut, fin)
             everyDates.push(dates)
             myChart.data.datasets.push({ ...defaultDataset, label: e, data: values, backgroundColor: colors[e], borderColor: colors[e], minBarLength: 3 })
-            total = values.reduce((a,b)=>a+b, total)
+            total = values.reduce((a, b) => a + b, total)
         })
         myChart.data.labels = everyDates[0].map(e => e.format("DD/MM/YYYY"))
         $("#total")[0].className = ""

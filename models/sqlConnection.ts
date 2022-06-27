@@ -94,10 +94,14 @@ export async function getToken(id: number) {
     return await getSingleVal(`SELECT tokenValue FROM tokens where tokenId=${id}`).catch(console.error)
 }
 
-export function pushTwitterStat(numberofFollowers: number, tweetsWithImpressions: { id: number, impressions: number }[]) {
+export async function updateToken(id:number, newToken:string){
+    query(`UPDATE tokens SET tokenValue="${newToken}" WHERE tokenId=${id}`)
+}
+
+export function pushTwitterStat(numberofFollowers: number, tweetsWithImpressions: { id: number, impressions: number }[] | null) {
     query(`INSERT INTO twitterStats (date, numberOfFollowers) VALUES (NOW(), ${numberofFollowers})`)
         .catch(e => { throw "error writing into twitterStats" })
-    tweetsWithImpressions.forEach(tweet => {
+    if (tweetsWithImpressions)tweetsWithImpressions.forEach(tweet => {
         query(`INSERT INTO twitterImpressions (tweetId, impressions) VALUES (${tweet.id}, ${tweet.impressions}) ON DUPLICATE KEY UPDATE impressions=${tweet.impressions}`)
     })
 }

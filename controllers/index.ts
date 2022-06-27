@@ -10,7 +10,6 @@ router.get('/', (req: express.Request, res: express.Response) => {
 });
 
 router.put('/forceReload', (req: express.Request, res: express.Response) => {
-    console.log("recu")
     unlinkSync("cache/facebook.json")
     unlinkSync("cache/instagram.json")
     unlinkSync("cache/twitter.json")
