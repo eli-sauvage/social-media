@@ -43,7 +43,7 @@ export async function tokenChange(code: string):Promise<boolean>{
     return true
 }
 
-enum payload { connectionUrl, newPageToken }
+enum payload { OK, connectionUrl, newPageToken }
 
 export async function getStats(): Promise<fbData> {
     let userToken = await getToken(5) as string
@@ -69,7 +69,7 @@ export async function getStats(): Promise<fbData> {
     return ret
 }
 
-async function verifyToken(userToken: string, pageToken: string): Promise<{ type: payload, value:string}> {
+async function verifyToken(userToken: string, pageToken: string): Promise<{ type: payload, value?:string}> {
     if(pageToken == "")pageToken="a"//debug token not accepting empty tokens
     if(userToken == "") userToken="a"
     let url = `https://graph.facebook.com/debug_token?input_token=${pageToken}&access_token=${userToken}`
@@ -81,7 +81,7 @@ async function verifyToken(userToken: string, pageToken: string): Promise<{ type
     }) as any
     if (res.error && res.msg == "connectionError") return { type:payload.connectionUrl, value:res.connectionUrl}
     let tokenData = res.data.data
-    if (tokenData.is_valid) return
+    if (tokenData.is_valid) return {type:payload.OK}
     else{//wrong page token
         //get userID
         let userId = (await axios.get(`https://graph.facebook.com/me?fields=id&access_token=${userToken}`)).data.id
@@ -90,7 +90,7 @@ async function verifyToken(userToken: string, pageToken: string): Promise<{ type
         if(page){
             pageToken = page.access_token
             updateToken(8, pageToken)
-            return {type:payload.newPageToken, value:pageToken}
+            return { type:payload.newPageToken, value:pageToken}
         }else{
             throw "l'utilisateur dont l'access token est dans la DB n'est pas admin de jcutt"
         }
