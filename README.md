@@ -7,7 +7,7 @@ docker run -p 1337:1337 -d social-media-analyzer
 
 # Maintenance
 ## Tokens d'application
-- Pour linkedIn et facebook(donc instagram), les flows d'authorisation OAuth2.0 sont censé s'exécuter seuls
+- Pour linkedIn et facebook(donc instagram), les flows d'authorisation OAuth2.0 sont censé s'exécuter seuls si l'appli détecte un token invalide/expiré
 - Pour tweeter, le token devrait être d'une durée de vie infinie
 
 ## En cas d'erreur inexpliquée
