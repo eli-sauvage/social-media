@@ -11,6 +11,7 @@ docker run -p 1337:1337 -d social-media-analyzer
 - Pour tweeter, le token devrait être d'une durée de vie infinie
 
 ## En cas d'erreur inexpliquée
+- hit F5 (le proxy aime pas trop lorsque c'est long à charger)
 - regarder la console côté client
 - si les informations sont trop vagues, lancer le projet en local avec un debugger pour avoir accès aux détails, call stack, etc.
 
