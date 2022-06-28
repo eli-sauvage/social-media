@@ -1,18 +1,10 @@
-/*
- * GET home page.
- */
 import * as express from 'express';
 import * as model from '../models/linkedin'
 
 
-//import
 export const router = express.Router();
 
-// router.get('/', async (req: express.Request, res: express.Response) => {
-//     res.render('index', { title: 'LinkedIn', networkName:  'linkedin', host:process.env.HOST })//JSON.stringify(stats)});
-// });
-
-router.get('/table', async (req: express.Request, res: express.Response) => {
+router.get('/table', async (req: express.Request, res: express.Response) => { //ancienne mise en forme
     res.render('table', { title: 'LinkedIn', networkName:  'linkedin', host:process.env.HOST })//JSON.stringify(stats)});
 });
 router.get('/data', async (req: express.Request, res: express.Response) => {
@@ -20,7 +12,6 @@ router.get('/data', async (req: express.Request, res: express.Response) => {
         if (e.msg && e.msg == "connectionError") return { error: 2, url: e.connectionUrl }
         return {error:1, data:e}
     }))
-    // res.send(await model.getStats().catch(e=>{return {error:1, data:e}}))
 })
 
 router.get("/login", async (req: express.Request, res: express.Response) => {

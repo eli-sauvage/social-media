@@ -17,7 +17,7 @@ type fbData = {
 }
 
 export let state: number | null
-
+enum payload { OK, connectionUrl, newPageToken }
 let client_id = "159776753022558"
 let redirect_url = "https://stats-reseaux.jc-utt.fr/facebook/login"
 
@@ -34,24 +34,13 @@ export async function getCache(): Promise<fbData | string> {
     }
 }
 
-export async function tokenChange(code: string):Promise<boolean>{
-    let client_secret = await getToken(9) as string
-    state = null
-    let url = `https://graph.facebook.com/v14.0/oauth/access_token?client_id=${client_id}&redirect_uri=${redirect_url}&client_secret=${client_secret}&code=${code}`
-    let res = await axios.get(url)
-    await updateToken(5, res.data.access_token)
-    return true
-}
-
-enum payload { OK, connectionUrl, newPageToken }
-
 export async function getStats(): Promise<fbData> {
     let userToken = await getToken(5) as string
     let pageToken = await getToken(8) as string
     let tokenVerify = await verifyToken(userToken, pageToken)
     if (tokenVerify.type == payload.connectionUrl) {
         throw { msg: "connectionError", connectionUrl: tokenVerify.value }
-    } else if (tokenVerify.type == payload.newPageToken){
+    } else if (tokenVerify.type == payload.newPageToken) {
         pageToken = tokenVerify.value
     }
 
@@ -69,9 +58,9 @@ export async function getStats(): Promise<fbData> {
     return ret
 }
 
-async function verifyToken(userToken: string, pageToken: string): Promise<{ type: payload, value?:string}> {
-    if(pageToken == "")pageToken="a"//debug token not accepting empty tokens
-    if(userToken == "") userToken="a"
+async function verifyToken(userToken: string, pageToken: string): Promise<{ type: payload, value?: string }> {
+    if (pageToken == "") pageToken = "a"//debug token not accepting empty tokens
+    if (userToken == "") userToken = "a"//idem
     let url = `https://graph.facebook.com/debug_token?input_token=${pageToken}&access_token=${userToken}`
     let res = await axios.get(url).catch(e => {
         if (e.response.data.error.type == "OAuthException") {//invalid user token
@@ -79,23 +68,36 @@ async function verifyToken(userToken: string, pageToken: string): Promise<{ type
             return { error: true, msg: "connectionError", connectionUrl: `https://www.facebook.com/v14.0/dialog/oauth?client_id=${client_id}&redirect_uri=${redirect_url}&state=${state}` }
         }
     }) as any
-    if (res.error && res.msg == "connectionError") return { type:payload.connectionUrl, value:res.connectionUrl}
+    if (res.error && res.msg == "connectionError") return { type: payload.connectionUrl, value: res.connectionUrl }
     let tokenData = res.data.data
-    if (tokenData.is_valid) return {type:payload.OK}
-    else{//wrong page token
-        //get userID
-        let userId = (await axios.get(`https://graph.facebook.com/me?fields=id&access_token=${userToken}`)).data.id
-        let pages = (await axios.get(`https://graph.facebook.com/${userId}/accounts?access_token=${userToken}`)).data.data
-        let page = pages.find(e => e.id =="153303758193756")
-        if(page){
+    if (tokenData.is_valid) return { type: payload.OK }
+    else {//wrong page token
+        let userId = (await axios.get(`https://graph.facebook.com/me?fields=id&access_token=${userToken}`)).data.id//get userID
+        let pages = (await axios.get(`https://graph.facebook.com/${userId}/accounts?access_token=${userToken}`)).data.data //toutes les pages dont l'utilisateur "userId" est le gérant
+        let page = pages.find(e => e.id == "153303758193756")
+        if (page) {
             pageToken = page.access_token
             updateToken(8, pageToken)
-            return { type:payload.newPageToken, value:pageToken}
-        }else{
+            return { type: payload.newPageToken, value: pageToken }
+        } else {
             throw "l'utilisateur dont l'access token est dans la DB n'est pas admin de jcutt"
         }
     }
 }
+
+export async function tokenChange(code: string): Promise<boolean> {
+    let client_secret = await getToken(9) as string
+    state = null
+    let url = `https://graph.facebook.com/v14.0/oauth/access_token?client_id=${client_id}&redirect_uri=${redirect_url}&client_secret=${client_secret}&code=${code}`
+    let res = await axios.get(url)
+    await updateToken(5, res.data.access_token)
+    return true
+}
+
+
+
+
+//récupération des données --------------------------------------------------------------------
 
 async function getFollowersHistory(): Promise<{ date: number, followers: number }[]> {
     let res = await getMultiple("SELECT date, numberOfFollowers FROM facebookStats").catch(e => { throw "error reading sql facebook followers : " + e })

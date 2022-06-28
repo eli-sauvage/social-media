@@ -1,3 +1,7 @@
+//mise en forme des données sous forme de graphique
+//un peu illisible, désolé
+
+
 $('#dateDebut').datepicker({ format: "dd/mm/yyyy" });
 $("#dateDebut")[0].value = moment().subtract(90, "days").format("DD/MM/YYYY")
 $('#dateFin').datepicker({ format: "dd/mm/yyyy" });
@@ -38,6 +42,7 @@ let mychart, data, firstDateFollowers, firstDatePosts, ctx
         }
     }
     if(err)return
+    //si les données sont ok, on affiche
     $("#status").remove();
 
     firstDateFollowers = moment()

@@ -32,7 +32,7 @@ export async function getCache(): Promise<twitterStats> {
 }
 
 export async function getStats(): Promise<twitterStats> {
-    let token = await getToken(4) as string
+    let token = await getToken(4) as string//ne devrait pas expirer
     let [followers, posts, followersHistory, impressions] = await Promise.all([getFollowers(token), getTweets(token), getFollowersHistory(),
         getMultiple("SELECT tweetId, impressions FROM twitterImpressions").catch(e=>{throw "error reading impressions"+e})
     ])
@@ -99,6 +99,6 @@ async function getTweets(token: string): Promise<tweet[]> {
     return tweets.sort((a, b)=> a.date-b.date)
 }
 
-export async function getImpressions(): Promise<{ id: number, impressions: number }[]> {
+export async function getImpressions(): Promise<{ id: number, impressions: number }[]> {//TODO
     return
 }

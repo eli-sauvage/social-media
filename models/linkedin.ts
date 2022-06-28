@@ -27,20 +27,6 @@ export let state: number | null
 let scope ="r_organization_social%20rw_organization_admin%20w_member_social%20w_organization_social"
 let redirectUrl = "https://stats-reseaux.jc-utt.fr/linkedin/login"
 
-export async function tokenChange(code: string):Promise<boolean>{
-    let client_secret = await getToken(10) as string
-    state = null
-    let url = `https://www.linkedin.com/oauth/v2/accessToken`
-    const params = new URLSearchParams()
-    params.append("grant_type", "authorization_code")
-    params.append("code", code)
-    params.append("client_id", clientId)
-    params.append("client_secret", client_secret)
-    params.append("redirect_uri", redirectUrl)
-    let res = await axios.post(url, params)
-    await updateToken(1, res.data.access_token)
-    return true
-}
 
 export async function getCache(): Promise<linkedInData> {
     try {
@@ -80,7 +66,7 @@ export async function getStats(): Promise<linkedInData> {
 }
 
 async function verifToken(clientSecret: string, token: string): Promise<{ type: TVPayload, value?: string }> {
-    const params = new URLSearchParams()
+    const params = new URLSearchParams() //x-www-form-urlencoded
     params.append("client_id", clientId)
     params.append("client_secret", clientSecret)
     params.append("token", token)
@@ -88,13 +74,31 @@ async function verifToken(clientSecret: string, token: string): Promise<{ type: 
         console.log({ msg: "error verifying linkedin token : ", err: e.response.data })
         return { data: { active: false } } //probably bad token
     }) as any
-    if (res.data.active) return { type: TVPayload.OK }
+    if (res.data.active) return { type: TVPayload.OK } //token valide
     else {
         state = Math.round(Math.random() * 10000000000)
         return { type: TVPayload.connectionUrl, value: `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUrl}&state=${state}&scope=${scope}`}
     }
 
 }
+export async function tokenChange(code: string): Promise<boolean> {
+    let client_secret = await getToken(10) as string
+    state = null
+    let url = `https://www.linkedin.com/oauth/v2/accessToken`
+    const params = new URLSearchParams()//x-www-form-urlencoded
+    params.append("grant_type", "authorization_code")
+    params.append("code", code)
+    params.append("client_id", clientId)
+    params.append("client_secret", client_secret)
+    params.append("redirect_uri", redirectUrl)
+    let res = await axios.post(url, params)
+    await updateToken(1, res.data.access_token)
+    return true
+}
+
+
+
+//récupération des données ---------------------------------------------------------------------------------
 
 async function getFollowersHistory(): Promise<{ date: number, followers: number }[]> {
     let res = await getMultiple("SELECT date, numberOfFollowers FROM linkedinStats").catch(e => { throw "error reading sql linkedin followers : " + e })

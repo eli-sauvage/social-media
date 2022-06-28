@@ -30,3 +30,10 @@ USERPASSWORD=************ #mot de passe utilisé pour la connexion utilisateur
 # Sécurité
 - l'application utilise un mdp unique, sans identifiant (données pas assez sensibles pour s'embeter à créer des comptes..)
   - authentification par cookie, les sessions sont stokées comme simples variables et donc terminées si l'appli est redémarée
+
+# TODO
+- twitter 3-legged ["OAuth 2.0 Authorization Code Flow with PKCE"](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code) au lieu de l'actuel Bearer
+    - permettra d'acceder au likes, commentaires, retweets ...
+- affichage multi paramètres sur le même graph (exp : observation du lien entre évolution des impressions et évolution des followers)
+- temps de chargement plus rapide
+- site responsive ?

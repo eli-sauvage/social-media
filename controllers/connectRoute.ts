@@ -1,9 +1,6 @@
-/*
- * GET insta page.
- */
 import * as express from 'express';
 import { createSession } from '../models/sessions';
-//import
+
 
 export const router = express.Router();
 

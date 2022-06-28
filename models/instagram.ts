@@ -28,7 +28,7 @@ export async function getCache(): Promise<instaStats> {
     }
 }
 export async function getStats():Promise<instaStats>{
-    let token = await getToken(5) as string
+    let token = await getToken(5) as string //si pas bon, c'est facebook.ts qui s'en occupera
     let [followers, posts, history] = await Promise.all([
         getFollowers(token), 
         getPosts(token),

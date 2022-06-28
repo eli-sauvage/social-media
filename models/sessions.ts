@@ -16,7 +16,6 @@ export function createSession():session{
     let id = randomId()
     const today = new Date()
     const tomorrow = new Date(today)
-    // tomorrow.setMinutes(tomorrow.getMinutes()+1)
     tomorrow.setDate(tomorrow.getDate() + 1)
     let newSession: session = {
         id : id,

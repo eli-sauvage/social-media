@@ -1,6 +1,3 @@
-/*
- * GET home page.
- */
 import * as express from 'express';
 import { unlinkSync } from "fs"
 const router = express.Router();
