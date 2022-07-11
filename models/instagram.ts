@@ -84,11 +84,11 @@ async function getPosts(token:string):Promise<post[]>{
                 likes: e.like_count,
                 comments: e.comments_count,
                 date: (new Date(e.timestamp)).getTime(),
-                impressions:e.insights.data.find(e=>e.name=="impressions").values[0].value
+                impressions:e.insights?e.insights.data.find(e=>e.name=="impressions").values[0].value:null
             })
         })
         return postList.sort((a, b)=> a.date-b.date)
     } catch (e) {
-        throw "got error reading instagram followers : " + e
+        throw "got error reading instagram posts : " + e
     }
 }
