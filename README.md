@@ -1,8 +1,8 @@
 # Pour lancer sur le server
 ```
 docker build -t social-media-analyzer .
-(docker stop s-m-a)
-docker run -p 1337:1337 -d social-media-analyzer
+(docker stop s-m-a && docker rm s-m-a)
+docker run -p 1337:1337 --name s-m-a -d social-media-analyzer
 ```
 
 # Maintenance
