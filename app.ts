@@ -80,6 +80,8 @@ app.use((err, req, res, next) => { // eslint-disable-line @typescript-eslint/no-
 app.set('port', process.env.PORT || 3000);
 
 let server: Server
+console.log("mysql host : " + process.env.MYSQLHOST)
+console.log("mysql port : " + process.env.MYSQLPORT)
 initMySql().then(() => {
     server = app.listen(app.get('port'), function () {
         console.log(`Express server listening on port ${(server.address() as AddressInfo).port} and mysql initilized`)
