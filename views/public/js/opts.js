@@ -5,7 +5,11 @@ const chartOptions = {
         datasets: []
     },
     options: {
-
+        scales : {
+            y:{
+                beginAtZero:true
+            }
+        },
         elements: {
             point: {
                 pointRadius: 2,
