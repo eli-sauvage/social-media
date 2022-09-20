@@ -9,6 +9,8 @@ RUN npm i -g typescript
 
 COPY ./ ./
 
+RUN chmod 777 /app/cache
+
 RUN mkdir /app/cache
 
 RUN tsc
