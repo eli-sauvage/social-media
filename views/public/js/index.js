@@ -300,6 +300,7 @@ function updateChart() {
     } else if (mode == "stories") {
         myChart.destroy()
         myChart = new Chart(ctx, { ...chartOptions, type: "bar" })
+        myChart.options.scales.y.max = undefined
         let total = 0
         networkList.forEach(e => {
             // console.log(e)
