@@ -170,7 +170,7 @@ async function getInsights(token: string): Promise<insights> {
 }
 
 export async function getFollowers(apiToken: string): Promise<number> {
-    let url = "https://api.linkedin.com/v2/organizationalEntityFollowerStatistics?q=organizationalEntity&organizationalEntity=urn:li:organization:9428607"
+    let url = "https://api.linkedin.com/v2/networkSizes/urn:li:organization:9428607?edgeType=CompanyFollowedByMember"
     let follows = await axios.get(url, {
         headers: {
             "Authorization": `Bearer ${apiToken}`
@@ -178,8 +178,7 @@ export async function getFollowers(apiToken: string): Promise<number> {
     }).catch(e => { throw "error getting linkedin followers : " + e }) as any
     let followerCount: number
     try {
-        followerCount = follows.data.elements[0].followerCountsByAssociationType[0].followerCounts.organicFollowerCount//non-employees
-        followerCount += follows.data.elements[0].followerCountsByAssociationType[1].followerCounts.organicFollowerCount//employees
+        followerCount = follows.data.firstDegreeSize
     } catch (e) {
         throw "error reading linkedIn followers : " + e
     }
