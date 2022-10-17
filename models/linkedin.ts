@@ -25,7 +25,7 @@ enum TVPayload { //token verif payload
 }
 export let state: number | null
 let scope ="r_organization_social%20rw_organization_admin%20w_member_social%20w_organization_social"
-let redirectUrl = "https://stats-reseaux.jc-utt.fr/linkedin/login"
+let redirectUrl = "https://stats-reseaux.jc.uttnetgroup.fr/linkedin/login"
 
 
 export async function getCache(): Promise<linkedInData> {

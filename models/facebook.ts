@@ -19,7 +19,7 @@ type fbData = {
 export let state: number | null
 enum payload { OK, connectionUrl, newPageToken }
 let client_id = "159776753022558"
-let redirect_url = "https://stats-reseaux.jc-utt.fr/facebook/login"
+let redirect_url = "https://stats-reseaux.jc.uttnetgroup.fr/facebook/login"
 
 
 export async function getCache(): Promise<fbData | string> {
