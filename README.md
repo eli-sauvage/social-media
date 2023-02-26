@@ -26,9 +26,6 @@ docker run -p 1337:1337 --name s-m-a -d social-media-analyzer
 - regarder la console côté client
 - si les informations sont trop vagues, lancer le projet en local avec un debugger pour avoir accès aux détails, call stack, etc.
 
-# Pour lancer en local en utilisant la DB distante
-lancer `portFwd.bat` (la DB n'accepte que les connexions locales)
-
 `.env` :
 ```
 MYSQLPASSWORD=******
