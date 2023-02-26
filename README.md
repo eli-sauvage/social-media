@@ -1,3 +1,14 @@
+# Social Media
+Ce repo est un fork de [celui-ci](https://gitlab.com/jc-utt/social-media-analyzer)
+
+Actuellement hébergé sur un cluster Kubenetees (Redhat OC OKD).
+
+# Aperçu de l'application :
+
+![Capture d'écran 2023-02-26 174237](https://user-images.githubusercontent.com/36312455/221424070-d8208a36-4386-4529-9395-a111a55e03b8.png)
+
+
+
 # Pour lancer sur le server
 ```
 docker build -t social-media-analyzer .
